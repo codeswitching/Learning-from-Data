@@ -71,7 +71,6 @@ iterations <- rep(0, maxruns) # initialize the iterations vector
 
     iterations[run] <- iterations[run] + 1
     
-    
     w.history <- rbind(w.history, w)
     
     # Redraw the graph
