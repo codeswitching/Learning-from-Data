@@ -1,6 +1,6 @@
 # HW1 - Perceptron
 # Lauren Steely
-# Generates a dataset and runs the perceptron algorithm to completion one time
+# Runs the perceptron algorithm multiple times with a new dataset each time, to track mean iterations for given n.
 
 library(tidyverse)
 
@@ -14,7 +14,11 @@ isLeft <- function(a, b, cx, cy) {
 
 # PERCEPTRON --------------------------------------------------------------
 
-  n <- 10      # number of observations
+maxruns <- 50 # number of times to run perceptron with fresh random data
+n <- 10       # number of observations
+iterations <- rep(0, maxruns) # initialize the vector that sores the # of iterations for each run
+
+for (run in 1:maxruns) {
   
   # Generate input data x
 
@@ -44,10 +48,8 @@ isLeft <- function(a, b, cx, cy) {
   w <- c(0, 0, 0) # initialize vector of weights
 
   # Implement the Perceptron algorithm
-
-  w.history <- data.frame(w0 = 0, w1 = 0, w2 = 0)
   
-  iterations <- 1 # initialize the iterations counter for this run
+  iterations[run] <- 1 # initialize the iterations counter for this run
   repeat {
 
     # Predict new y values using weights w
@@ -56,36 +58,21 @@ isLeft <- function(a, b, cx, cy) {
       y.guess[i] <- sign(x.mat[,i] %*% w) # for each observation x(i), compute y.guess as dot product of x and w
     }
 
-    # Choose a point randomly from the set of misclassified points
-    
-    if (!identical(y.guess, y)) {
-      j <- sample(which(y.guess != y), 1) # randomly select a j for which y.guess[j] != y[j]
-    }
-    
-    # Redraw the graph
-    
-    x$y.guess <- y.guess
-    inputplot <- ggplot(x, aes(x1, x2, color = as.factor(y.guess))) + geom_point(size=2.5) +
-      geom_abline(slope = m, intercept = b, size = 1.2, color = "gray60") +
-      geom_point(data = x[j,], aes(x1, x2), shape=8, size=5)
-    ggsave(inputplot, file=paste0("inputplot", iterations, ".png"), device="png")
-    
     if (identical(y.guess, y)) break # repeat until y.guess == y
   
+    # Choose a point randomly from the set of misclassified points
+
+    j <- sample(which(y.guess != y), 1) # randomly select a j for which y.guess[j] != y[j]
+
     # Update the weight vector
 
     w <- w + y[j] * x.mat[,j] # y[j] is +1 or -1
 
     # Update state variables
     
-    iterations <- iterations + 1
-    w.history <- rbind(w.history, w)
+    iterations[run] <- iterations[run] + 1
   }
+}
 
 cat("\nCompleted", maxruns, "runs of n =", n, "points with an average of", round(mean(iterations), 0), "iterations per run.\n")
-
-w.history$i <- 1:iterations
-ggplot(w.history, aes(i, w1)) + geom_line(size=1, color = "darkred") +
-  geom_line(data=w.history, aes(i, w2), size=1, color = "darkblue")
-ggsave("convergence.png")
 
