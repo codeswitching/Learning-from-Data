@@ -14,8 +14,8 @@ isLeft <- function(a, b, cx, cy) {
 
 # PERCEPTRON --------------------------------------------------------------
 
-maxruns <- 50 # number of times to run perceptron with fresh random data
-n <- 10       # number of observations
+maxruns <- 5 # number of times to run perceptron with fresh random data
+n <- 100       # number of observations
 iterations <- rep(0, maxruns) # initialize the vector that sores the # of iterations for each run
 
 for (run in 1:maxruns) {

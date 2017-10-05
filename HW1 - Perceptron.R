@@ -14,7 +14,7 @@ isLeft <- function(a, b, cx, cy) {
 
 # PERCEPTRON --------------------------------------------------------------
 
-  n <- 10      # number of observations
+  n <- 100      # number of observations
   
   # Generate input data x
 
@@ -46,7 +46,6 @@ isLeft <- function(a, b, cx, cy) {
   # Implement the Perceptron algorithm
 
   w.history <- data.frame(w0 = 0, w1 = 0, w2 = 0)
-  
   iterations <- 1 # initialize the iterations counter for this run
   repeat {
 
@@ -67,7 +66,8 @@ isLeft <- function(a, b, cx, cy) {
     x$y.guess <- y.guess
     inputplot <- ggplot(x, aes(x1, x2, color = as.factor(y.guess))) + geom_point(size=2.5) +
       geom_abline(slope = m, intercept = b, size = 1.2, color = "gray60") +
-      geom_point(data = x[j,], aes(x1, x2), shape=8, size=5)
+      geom_point(data = x[j,], aes(x1, x2), shape=8, size=5) +
+      geom_abline(slope = -w[2]/w[3], intercept = -w[1]/w[3], size = 1.2, color = "red")
     ggsave(inputplot, file=paste0("inputplot", iterations, ".png"), device="png")
     
     if (identical(y.guess, y)) break # repeat until y.guess == y
